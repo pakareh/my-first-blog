@@ -13,4 +13,28 @@
 
     <h1>{{ post.title }}</h1>
     <p>{{ post.text|linebreaksbr }}</p>
+    <br/><br/><a class="btn btn-default" href="{% url 'add_comment_to_post' pk=post.pk %}">Agregar comentario</a>
+    <br/><br/><b>Comentarios:</b><br/><br/>
+
+{% for comment in post.comments.all %}
+    {% if user.is_authenticaded or comment.approved_comment %}
+    <div class="comment">
+        ----<br/>
+        <div class="date">
+            {{ comment.created_date }}
+            {% if not comment.approved_comment %}
+                <a class="btn btn-default" href="{% url 'comment_remove' pk=comment.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
+                <a class="btn btn-default" href="{% url 'comment_approve' pk=comment.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
+            {% endif %}
+        </div>
+        <strong>{{ comment.author }}</strong>
+        <p>{{ comment.text|linebreaks }}</p>
+    </div>
+    {% endif %}
+{% empty %}
+    <div class="comment">
+    <p>No hay comentarios todavía :(</p>
+    </div>
+{% endfor %}
+
 {% endblock %}
